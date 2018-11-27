@@ -5,131 +5,331 @@
 
 # Prerequisites
 
-*Javascript OOP
-*Variables, Functions, Callbacks
+* Javascript OOP
+* Variables, Functions, Callbacks
 
-## Objectives
+# Objectives
 
 By the end of this, developers should be able to:
 
 * Explain prototypal inheritance
 * Understand the difference between class and prototypal inheritance
 
+# Prototypal Inheritance
 
-# What’s the Difference Between Class & Prototypal Inheritance?
+* In programming, we often want to take something and extend it.
 
-* Class Inheritance: A class is like a blueprint — a description of the object to be created. Classes inherit from classes and create subclass relationships: hierarchical class taxonomies.
+For instance, we have a user object with its properties and methods, and want to make admin and guest as slightly modified variants of it. We’d like to reuse what we have in user, not copy/reimplement its methods, just build a new object on top of it.
 
-* Instances are typically instantiated via constructor functions with the `new` keyword. Class inheritance may or may not use the `class` keyword from ES6. Classes as you may know them from languages like Java don’t technically exist in JavaScript. Constructor functions are used, instead. The ES6 `class` keyword desugars to a constructor function:
+Prototypal inheritance is a language feature that helps in that.
+
+[[Prototype]]
+In JavaScript, objects have a special hidden property [[Prototype]] (as named in the specification), that is either null or references another object. That object is called “a prototype”:
+
+
+That [[Prototype]] has a “magical” meaning. When we want to read a property from object, and it’s missing, JavaScript automatically takes it from the prototype. In programming, such thing is called “prototypal inheritance”. Many cool language features and programming techniques are based on it.
+
+The property [[Prototype]] is internal and hidden, but there are many ways to set it.
+
+One of them is to use __proto__, like this:
+```js
+ let animal = {
+  eats: true
+};
+let rabbit = {
+  jumps: true
+};
+
+rabbit.__proto__ = animal;
+```
+
+* Please note that __proto__ is not the same as [[Prototype]]. That’s a getter/setter for it. We’ll talk about other ways of setting it later, but for now __proto__ will do just fine.
+
+If we look for a property in rabbit, and it’s missing, JavaScript automatically takes it from animal.
+
+For instance:
+```js
+ let animal = {
+  eats: true
+};
+let rabbit = {
+  jumps: true
+};
+
+rabbit.__proto__ = animal; // (*)
+```
+
+// we can find both properties in rabbit now:
+```js
+alert( rabbit.eats ); // true (**)
+alert( rabbit.jumps ); // true
+```
+Here the line (*) sets animal to be a prototype of rabbit.
+
+Then, when alert tries to read property rabbit.eats (**), it’s not in rabbit, so JavaScript follows the [[Prototype]] reference and finds it in animal (look from the bottom up):
+
+Here we can say that "animal is the prototype of rabbit" or "rabbit prototypally inherits from animal".
+
+So if animal has a lot of useful properties and methods, then they become automatically available in rabbit. Such properties are called “inherited”.
+
+If we have a method in animal, it can be called on rabbit:
 
 ```js
-class Foo {}
-typeof Foo // 'function'
+ let animal = {
+  eats: true,
+  walk() {
+    alert("Animal walk");
+  }
+};
+
+let rabbit = {
+  jumps: true,
+  __proto__: animal
+};
 ```
-In JavaScript, class inheritance is implemented on top of prototypal inheritance, but that does not mean that it does the same thing:
-
-JavaScript’s class inheritance uses the prototype chain to wire the child `Constructor.prototype` to the parent `Constructor.prototype` for delegation. Usually, the `super()` constructor is also called. Those steps form single-ancestor parent/child hierarchies and create the tightest coupling available in OO design.
-
-“Classes inherit from classes and create subclass relationships: hierarchical class taxonomies.”
-Prototypal Inheritance: A prototype is a working object instance. Objects inherit directly from other objects.
-
-Instances may be composed from many different source objects, allowing for easy selective inheritance and a flat [[Prototype]] delegation hierarchy. In other words, class taxonomies are not an automatic side-effect of prototypal OO: a critical distinction.
-
-Instances are typically instantiated via factory functions, object literals, or `Object.create()`.
-
-“A prototype is a working object instance. Objects inherit directly from other objects.”
-Why Does this Matter?
-Inheritance is fundamentally a code reuse mechanism: A way for different kinds of objects to share code. The way that you share code matters because if you get it wrong, it can create a lot of problems, specifically:
-
-Class inheritance creates parent/child object taxonomies as a side-effect.
-
-Those taxonomies are virtually impossible to get right for all new use cases, and widespread use of a base class leads to the fragile base class problem, which makes them difficult to fix when you get them wrong. In fact, class inheritance causes many well known problems in OO design:
-
-The tight coupling problem (class inheritance is the tightest coupling available in oo design), which leads to the next one…
-The fragile base class problem
-Inflexible hierarchy problem (eventually, all evolving hierarchies are wrong for new uses)
-The duplication by necessity problem (due to inflexible hierarchies, new use cases are often shoe-horned in by duplicating, rather than adapting existing code)
-The Gorilla/banana problem (What you wanted was a banana, but what you got was a gorilla holding the banana, and the entire jungle)
-I discuss some of the issues in more depth in my talk, “Classical Inheritance is Obsolete: How to Think in Prototypal OO”:
+// walk is taken from the prototype
+rabbit.walk(); // Animal walk
+The method is automatically taken from the prototype, like this:
 
 
-The solution to all of these problems is to favor object composition over class inheritance.
+The prototype chain can be longer:
 
-“Favor object composition over class inheritance.”
-~ The Gang of Four, “Design Patterns: Elements of Reusable Object Oriented Software”
-Summed up nicely here:
+```js
+ let animal = {
+  eats: true,
+  walk() {
+    alert("Animal walk");
+  }
+};
+
+let rabbit = {
+  jumps: true,
+  __proto__: animal
+};
+
+let longEar = {
+  earLength: 10,
+  __proto__: rabbit
+}
+```
+// walk is taken from the prototype chain
+longEar.walk(); // Animal walk
+alert(longEar.jumps); // true (from rabbit)
+
+There are actually only two limitations:
+
+The references can’t go in circles. JavaScript will throw an error if we try to assign __proto__ in a circle.
+The value of __proto__ can be either an object or null. All other values (like primitives) are ignored.
+Also it may be obvious, but still: there can be only one [[Prototype]]. An object may not inherit from two others.
+
+# Read/write rules
+The prototype is only used for reading properties.
+
+For data properties (not getters/setters) write/delete operations work directly with the object.
+
+In the example below, we assign its own walk method to rabbit:
+```js
+ let animal = {
+  eats: true,
+  walk() {
+    /* this method won't be used by rabbit */
+  }
+};
+
+let rabbit = {
+  __proto__: animal
+}
+
+rabbit.walk = function() {
+  alert("Rabbit! Bounce-bounce!");
+};
+
+rabbit.walk(); // Rabbit! Bounce-bounce!
+```
+From now on, rabbit.walk() call finds the method immediately in the object and executes it, without using the prototype:
+
+For getters/setters – if we read/write a property, they are looked up in the prototype and invoked.
+
+For instance, check out admin.fullName property in the code below:
+```js
+ let user = {
+  name: "John",
+  surname: "Smith",
+
+  set fullName(value) {
+    [this.name, this.surname] = value.split(" ");
+  },
+
+  get fullName() {
+    return `${this.name} ${this.surname}`;
+  }
+};
+
+let admin = {
+  __proto__: user,
+  isAdmin: true
+};
+
+alert(admin.fullName); // John Smith (*)
+
+// setter triggers!
+admin.fullName = "Alice Cooper"; // (**)
+```
+Here in the line (*) the property admin.fullName has a getter in the prototype user, so it is called. And in the line (**) the property has a setter in the prototype, so it is called.
+
+# The value of “this”
+An interesting question may arise in the example above: what’s the value of this inside set fullName(value)? Where the properties this.name and this.surname are written: user or admin?
+
+The answer is simple: this is not affected by prototypes at all.
+
+No matter where the method is found: in an object or its prototype. In a method call, this is always the object before the dot.
+
+So, the setter actually uses admin as this, not user.
+
+That is actually a super-important thing, because we may have a big object with many methods and inherit from it. Then we can run its methods on inherited objects and they will modify the state of these objects, not the big one.
+
+For instance, here animal represents a “method storage”, and rabbit makes use of it.
+
+The call rabbit.sleep() sets this.isSleeping on the rabbit object:
+```js
+ // animal has methods
+let animal = {
+  walk() {
+    if (!this.isSleeping) {
+      alert(`I walk`);
+    }
+  },
+  sleep() {
+    this.isSleeping = true;
+  }
+};
+
+let rabbit = {
+  name: "White Rabbit",
+  __proto__: animal
+};
+
+// modifies rabbit.isSleeping
+rabbit.sleep();
+
+alert(rabbit.isSleeping); // true
+alert(animal.isSleeping); // undefined (no such property in the prototype)
+The resulting picture:
+```
+
+If we had other objects like bird, snake etc inheriting from animal, they would also gain access to methods of animal. But this in each method would be the corresponding object, evaluated at the call-time (before dot), not animal. So when we write data into this, it is stored into these objects.
+
+As a result, methods are shared, but the object state is not.
+
+# Summary
+In JavaScript, all objects have a hidden [[Prototype]] property that’s either another object or null.
+We can use obj.__proto__ to access it (there are other ways too, to be covered soon).
+The object referenced by [[Prototype]] is called a “prototype”.
+If we want to read a property of obj or call a method, and it doesn’t exist, then JavaScript tries to find it in the prototype. Write/delete operations work directly on the object, they don’t use the prototype (unless the property is actually a setter).
+If we call obj.method(), and the method is taken from the prototype, this still references obj. So methods always work with the current object even if they are inherited.
 
 
-Is All Inheritance Bad?
-When people say “favor composition over inheritance” that is short for “favor composition over class inheritance” (the original quote from “Design Patterns” by the Gang of Four). This is common knowledge in OO design because class inheritance has many flaws and causes many problems. Often people leave off the word class when they talk about class inheritance, which makes it sound like all inheritance is bad — but it’s not.
+# Tasks
+* Working with prototype
 
-There are actually several different kinds of inheritance, and most of them are great for composing composite objects from multiple component objects.
+Here’s the code that creates a pair of objects, then modifies them.
 
-Three Different Kinds of Prototypal Inheritance
-Before we dive into the other kinds of inheritance, let’s take a closer look at what I mean by class inheritance:
+Which values are shown in the process?
 
+```js
+let animal = {
+  jumps: null
+};
+let rabbit = {
+  __proto__: animal,
+  jumps: true
+};
 
-You can experiment with this example on Codepen.
+alert( rabbit.jumps ); // ? (1)
 
-`BassAmp` inherits from `GuitarAmp`, and `ChannelStrip` inherits from `BassAmp` & `GuitarAmp`. This is an example of how OO design goes wrong. A channel strip isn’t actually a type of guitar amp, and doesn’t actually need a cabinet at all. A better option would be to create a new base class that both the amps and the channel strip inherits from, but even that has limitations.
+delete rabbit.jumps;
 
-Eventually, the new shared base class strategy breaks down, too.
+alert( rabbit.jumps ); // ? (2)
 
-There’s a better way. You can inherit just the stuff you really need using object composition:
+delete animal.jumps;
 
+alert( rabbit.jumps ); // ? (3)
+```
+There should be 3 answers.
 
-Experiment with this on CodePen.
+<details>Solution<details>
+  
 
-If you look carefully, you might see that we’re being much more specific about which objects get which properties because with composition, we can. It wasn’t really an option with class inheritance. When you inherit from a class, you get everything, even if you don’t want it.
+Searching algorithm
+importance: 5
+The task has two parts.
 
-At this point, you may be thinking to yourself, “that’s nice, but where are the prototypes?”
+We have an object:
 
-To understand that, you have to understand that there are three different kinds of prototypal OO.
+let head = {
+  glasses: 1
+};
 
-Concatenative inheritance: The process of inheriting features directly from one object to another by copying the source objects properties. In JavaScript, source prototypes are commonly referred to as mixins. Since ES6, this feature has a convenience utility in JavaScript called `Object.assign()`. Prior to ES6, this was commonly done with Underscore/Lodash’s `.extend()` jQuery’s `$.extend()`, and so on… The composition example above uses concatenative inheritance.
+let table = {
+  pen: 3
+};
 
-Prototype delegation: In JavaScript, an object may have a link to a prototype for delegation. If a property is not found on the object, the lookup is delegated to the delegate prototype, which may have a link to its own delegate prototype, and so on up the chain until you arrive at `Object.prototype`, which is the root delegate. This is the prototype that gets hooked up when you attach to a `Constructor.prototype` and instantiate with `new`. You can also use `Object.create()` for this purpose, and even mix this technique with concatenation in order to flatten multiple prototypes to a single delegate, or extend the object instance after creation.
+let bed = {
+  sheet: 1,
+  pillow: 2
+};
 
-Functional inheritance: In JavaScript, any function can create an object. When that function is not a constructor (or `class`), it’s called a factory function. Functional inheritance works by producing an object from a factory, and extending the produced object by assigning properties to it directly (using concatenative inheritance). Douglas Crockford coined the term, but functional inheritance has been in common use in JavaScript for a long time.
+let pockets = {
+  money: 2000
+};
+Use __proto__ to assign prototypes in a way that any property lookup will follow the path: pockets → bed → table → head. For instance, pockets.pen should be 3 (found in table), and bed.glasses should be 1 (found in head).
+Answer the question: is it faster to get glasses as pockets.glasses or head.glasses? Benchmark if needed.
+solution
+Where it writes?
+importance: 5
+We have rabbit inheriting from animal.
 
-As you’re probably starting to realize, concatenative inheritance is the secret sauce that enables object composition in JavaScript, which makes both prototype delegation and functional inheritance a lot more interesting.
+If we call rabbit.eat(), which object receives the full property: animal or rabbit?
 
-When most people think of prototypal OO in JavaScript, they think of prototype delegation. By now you should see that they’re missing out on a lot. Delegate prototypes aren’t the great alternative to class inheritance — object composition is.
+let animal = {
+  eat() {
+    this.full = true;
+  }
+};
 
-Why Composition is Immune to the Fragile Base Class Problem
-To understand the fragile base class problem and why it doesn’t apply to composition, first you have to understand how it happens:
+let rabbit = {
+  __proto__: animal
+};
 
-`A` is the base class
-`B` inherits from `A`
-`C` inherits from `B`
-`D` inherits from `B`
-`C` calls `super`, which runs code in `B`. `B` calls `super` which runs code in `A`.
+rabbit.eat();
+solution
+Why two hamsters are full?
+importance: 5
+We have two hamsters: speedy and lazy inheriting from the general hamster object.
 
-`A` and `B` contain unrelated features needed by both `C` & `D`. `D` is a new use case, and needs slightly different behavior in `A`’s init code than `C` needs. So the newbie dev goes and tweaks `A`’s init code. `C` breaks because it depends on the existing behavior, and `D` starts working.
+When we feed one of them, the other one is also full. Why? How to fix it?
 
-What we have here are features spread out between `A` and `B` that `C` and `D` need to use in various ways. `C` and `D` don’t use every feature of `A` and `B`… they just want to inherit some stuff that’s already defined in `A` and `B`. But by inheriting and calling `super`, you don’t get to be selective about what you inherit. You inherit everything:
+ let hamster = {
+  stomach: [],
 
-“…the problem with object-oriented languages is they’ve got all this implicit environment that they carry around with them. You wanted a banana but what you got was a gorilla holding the banana and the entire jungle.” ~ Joe Armstrong — “Coders at Work”
-With Composition
-Imagine you have features instead of classes:
+  eat(food) {
+    this.stomach.push(food);
+  }
+};
 
-feat1, feat2, feat3, feat4
-`C` needs `feat1` and `feat3`, `D` needs `feat1`, `feat2`, `feat4`:
+let speedy = {
+  __proto__: hamster
+};
 
-const C = compose(feat1, feat3);
-const D = compose(feat1, feat2, feat4);
-Now, imagine you discover that `D` needs slightly different behavior from `feat1`. It doesn’t actually need to change `feat1`, instead, you can make a customized version of `feat1` and use that, instead. You can still inherit the existing behaviors from `feat2` and `feat4` with no changes:
+let lazy = {
+  __proto__: hamster
+};
 
-const D = compose(custom1, feat2, feat4);
-And `C` remains unaffected.
+// This one found the food
+speedy.eat("apple");
+alert( speedy.stomach ); // apple
 
-The reason this is not possible with class inheritance is because when you use class inheritance, you buy into the whole existing class taxonomy.
+// This one also has it, why? fix please.
+alert( lazy.stomach ); // apple
+solution
 
-If you want to adapt a little for a new use-case, you either end up duplicating parts of the existing taxonomy (the duplication by necessity problem), or you refactor everything that depends on the existing taxonomy to adapt the taxonomy to the new use case due to the fragile base class problem.
-
-Composition is immune to both.
-
-You Think You Know Prototypes, but…
-If you were taught to build classes or constructor functions and inherit from those, what you were taught was not prototypal inheritance. You were taught how to mimic class inheritance using prototypes. See “Common Misconceptions About Inheritance in JavaScript”.
-
-In JavaScript, class inheritance piggybacks on top of the very rich, flexible prototypal inheritance features built into the language a long time ago, but when you use class inheritance — even the ES6+ `class` inheritance built on top of prototypes, you’re not using the full power & flexibility of prototypal OO. In fact, you’re painting yourself into corners and opting into all of the class inheritance problems.
