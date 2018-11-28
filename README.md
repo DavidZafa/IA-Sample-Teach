@@ -259,9 +259,11 @@ There should be 3 answers.
 
 <details>
  <summary>Solution</summary>
-* ```js true```, taken from rabbit
-* ```js null```, taken from animal
-* ```js undefined```, there’s no such property any more
+<ol> 
+ <li> true, taken from rabbit </li>
+ <li> null, taken from animal </li>
+ <li>undefined, there’s no such property any more</li>
+ </ol>
 </details>
 
 # Why two hamsters are full?
