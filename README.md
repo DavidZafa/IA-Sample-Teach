@@ -29,7 +29,7 @@ In JavaScript, objects have a special hidden property [[Prototype]] (as named in
 
 ![picture](https://javascript.info/article/prototype-inheritance/object-prototype-empty.png)
 
-That [[Prototype]] has a “magical” meaning. When we want to read a property from object, and it’s missing, JavaScript automatically takes it from the prototype. In programming, such thing is called “prototypal inheritance”. Many cool language features and programming techniques are based on it.
+That [[Prototype]] has a “magical” meaning. When we want to read a property from object, and it’s missing, JavaScript automatically takes it from the prototype. In programming, such thing is called “prototypal inheritance”.
 
 The property [[Prototype]] is internal and hidden, but there are many ways to set it.
 
