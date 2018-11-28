@@ -121,7 +121,7 @@ let longEar = {
 longEar.walk(); // Animal walk
 alert(longEar.jumps); // true (from rabbit)
 
-![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-chain.png)
+![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-chain.png)
 
 There are actually only two limitations:
 
