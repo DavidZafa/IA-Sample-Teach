@@ -27,7 +27,7 @@ Prototypal inheritance is a language feature that helps in that.
 ## [[Prototype]]
 In JavaScript, objects have a special hidden property [[Prototype]] (as named in the specification), that is either null or references another object. That object is called “a prototype”:
 
-https://javascript.info/article/prototype-inheritance/object-prototype-empty.png
+![picture](https://javascript.info/article/prototype-inheritance/object-prototype-empty.png)
 
 That [[Prototype]] has a “magical” meaning. When we want to read a property from object, and it’s missing, JavaScript automatically takes it from the prototype. In programming, such thing is called “prototypal inheritance”. Many cool language features and programming techniques are based on it.
 
