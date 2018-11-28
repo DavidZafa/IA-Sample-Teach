@@ -230,7 +230,7 @@ If we call obj.method(), and the method is taken from the prototype, this still 
 
 
 # Tasks
-* Working with prototype
+## Working with prototype
 
 Here’s the code that creates a pair of objects, then modifies them.
 
@@ -258,10 +258,10 @@ alert( rabbit.jumps ); // ? (3)
 There should be 3 answers.
 
 <details>Solution
-true, taken from rabbit.
-null, taken from animal.
-undefined, there’s no such property any more.
-
+* true, taken from rabbit.
+* null, taken from animal.
+* undefined, there’s no such property any more.
+<details>
 
 # Why two hamsters are full?
 
