@@ -45,7 +45,7 @@ let rabbit = {
 rabbit.__proto__ = animal;
 ```
 
-* Please note that __proto__ is not the same as [[Prototype]]. That’s a getter/setter for it. We’ll talk about other ways of setting it later, but for now __proto__ will do just fine.
+* Please note that __proto__ is not the same as [[Prototype]]. That’s a getter/setter for it. 
 
 If we look for a property in rabbit, and it’s missing, JavaScript automatically takes it from animal.
 
