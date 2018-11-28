@@ -13,6 +13,7 @@
 By the end of this, developers should be able to:
 
 * Explain prototypal inheritance
+* Understand the implementation of prototypal inheritance
 * Understand the difference between class and prototypal inheritance
 
 # Prototypal Inheritance
