@@ -90,9 +90,10 @@ let rabbit = {
   jumps: true,
   __proto__: animal
 };
-```
+
 // walk is taken from the prototype
 rabbit.walk(); // Animal walk
+```
 The method is automatically taken from the prototype, like this:
 
 ![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk.png)
