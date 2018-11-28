@@ -128,13 +128,13 @@ alert(longEar.jumps); // true (from rabbit)
 There are actually only two limitations:
 
 1. The references can’t go in circles. JavaScript will throw an error if we try to assign __proto__ in a circle.
-2. The value of __proto__ can be either an object or null. All other values (like primitives) are ignored.
+2. The value of __proto__ can be either an object or null. All other values are ignored.
 Also it may be obvious, but still: there can be only one [[Prototype]]. An object may not inherit from two others.
 
 # Read/Write Rules
 The prototype is only used for reading properties.
 
-For data properties (not getters/setters) write/delete operations work directly with the object.
+For data propertie, write/delete operations work directly with the object.
 
 In the example below, we assign its own walk method to rabbit:
 ```js
