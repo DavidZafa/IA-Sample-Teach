@@ -70,7 +70,7 @@ Here the line (*) sets animal to be a prototype of rabbit.
 
 Then, when alert tries to read property rabbit.eats (**), it’s not in rabbit, so JavaScript follows the [[Prototype]] reference and finds it in animal (look from the bottom up):
 
-![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit.png)
+![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit.png)
 
 Here we can say that "animal is the prototype of rabbit" or "rabbit prototypally inherits from animal".
 
@@ -95,7 +95,7 @@ let rabbit = {
 rabbit.walk(); // Animal walk
 The method is automatically taken from the prototype, like this:
 
-![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk.png)
+![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk.png)
 
 The prototype chain can be longer:
 
@@ -155,7 +155,7 @@ rabbit.walk(); // Rabbit! Bounce-bounce!
 ```
 From now on, rabbit.walk() call finds the method immediately in the object and executes it, without using the prototype:
 
-![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-2.png)
+![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-2.png)
 
 For getters/setters – if we read/write a property, they are looked up in the prototype and invoked.
 
@@ -226,7 +226,7 @@ alert(animal.isSleeping); // undefined (no such property in the prototype)
 ```
 The resulting picture:
 
-![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-3.png)
+![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-3.png)
 
 If we had other objects like bird, snake etc inheriting from animal, they would also gain access to methods of animal. But this in each method would be the corresponding object, evaluated at the call-time (before dot), not animal. So when we write data into this, it is stored into these objects.
 
