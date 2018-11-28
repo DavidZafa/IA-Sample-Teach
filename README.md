@@ -117,10 +117,11 @@ let longEar = {
   earLength: 10,
   __proto__: rabbit
 }
-```
+
 // walk is taken from the prototype chain
 longEar.walk(); // Animal walk
 alert(longEar.jumps); // true (from rabbit)
+```
 
 ![picture](https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-chain.png)
 
