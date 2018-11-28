@@ -257,11 +257,12 @@ alert( rabbit.jumps ); // ? (3)
 ```
 There should be 3 answers.
 
-<details>Solution
+<details>
+ <summary>Solution</summary>
 * true, taken from rabbit.
 * null, taken from animal.
 * undefined, there’s no such property any more.
-<details>
+</details>
 
 # Why two hamsters are full?
 
@@ -293,7 +294,7 @@ alert( speedy.stomach ); // apple
 // This one also has it, why? fix please.
 alert( lazy.stomach ); // apple
 ```
-<details>Solution
+<details><summary>Solution</summary>
 Let’s look carefully at what’s going on in the call speedy.eat("apple").
 
 The method speedy.eat is found in the prototype (=hamster), then executed with this=speedy (the object before the dot).
@@ -366,3 +367,4 @@ alert( lazy.stomach ); // <nothing>
 ```
 
 As a common solution, all properties that describe the state of a particular object, like stomach above, are usually written into that object. That prevents such problems.
+</details>
