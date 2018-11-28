@@ -70,6 +70,8 @@ Here the line (*) sets animal to be a prototype of rabbit.
 
 Then, when alert tries to read property rabbit.eats (**), it’s not in rabbit, so JavaScript follows the [[Prototype]] reference and finds it in animal (look from the bottom up):
 
+![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit.png)
+
 Here we can say that "animal is the prototype of rabbit" or "rabbit prototypally inherits from animal".
 
 So if animal has a lot of useful properties and methods, then they become automatically available in rabbit. Such properties are called “inherited”.
@@ -93,6 +95,7 @@ let rabbit = {
 rabbit.walk(); // Animal walk
 The method is automatically taken from the prototype, like this:
 
+![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk.png)
 
 The prototype chain can be longer:
 
@@ -118,13 +121,15 @@ let longEar = {
 longEar.walk(); // Animal walk
 alert(longEar.jumps); // true (from rabbit)
 
+![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-chain.png)
+
 There are actually only two limitations:
 
-The references can’t go in circles. JavaScript will throw an error if we try to assign __proto__ in a circle.
-The value of __proto__ can be either an object or null. All other values (like primitives) are ignored.
+1. The references can’t go in circles. JavaScript will throw an error if we try to assign __proto__ in a circle.
+2. The value of __proto__ can be either an object or null. All other values (like primitives) are ignored.
 Also it may be obvious, but still: there can be only one [[Prototype]]. An object may not inherit from two others.
 
-# Read/write rules
+# Read/Write Rules
 The prototype is only used for reading properties.
 
 For data properties (not getters/setters) write/delete operations work directly with the object.
@@ -149,6 +154,8 @@ rabbit.walk = function() {
 rabbit.walk(); // Rabbit! Bounce-bounce!
 ```
 From now on, rabbit.walk() call finds the method immediately in the object and executes it, without using the prototype:
+
+![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-2.png)
 
 For getters/setters – if we read/write a property, they are looked up in the prototype and invoked.
 
@@ -216,8 +223,10 @@ rabbit.sleep();
 
 alert(rabbit.isSleeping); // true
 alert(animal.isSleeping); // undefined (no such property in the prototype)
-The resulting picture:
 ```
+The resulting picture:
+
+![picture] (https://javascript.info/article/prototype-inheritance/proto-animal-rabbit-walk-3.png)
 
 If we had other objects like bird, snake etc inheriting from animal, they would also gain access to methods of animal. But this in each method would be the corresponding object, evaluated at the call-time (before dot), not animal. So when we write data into this, it is stored into these objects.
 
@@ -232,7 +241,7 @@ If we call obj.method(), and the method is taken from the prototype, this still 
 
 
 # Tasks
-## Working with prototype
+## Working With Prototype
 
 Here’s the code that creates a pair of objects, then modifies them.
 
