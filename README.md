@@ -210,7 +210,7 @@ As a result, methods are shared, but the object state is not.
 In JavaScript, all objects have a hidden [[Prototype]] property that’s either another object or null.
 We can use obj.__proto__ to access it (there are other ways too, to be covered soon).
 The object referenced by [[Prototype]] is called a “prototype”.
-If we want to read a property of obj or call a method, and it doesn’t exist, then JavaScript tries to find it in the prototype. Write/delete operations work directly on the object, they don’t use the prototype (unless the property is actually a setter).
+If we want to read a property of obj or call a method, and it doesn’t exist, then JavaScript tries to find it in the prototype. Write/delete operations work directly on the object, they don’t use the prototype 
 If we call obj.method(), and the method is taken from the prototype, this still references obj. So methods always work with the current object even if they are inherited.
 
 
