@@ -1,6 +1,6 @@
 [![General Assembly Logo](https://camo.githubusercontent.com/1a91b05b8f4d44b5bbfb83abac2b0996d8e26c92/687474703a2f2f692e696d6775722e636f6d2f6b6538555354712e706e67)](https://generalassemb.ly/education/web-development-immersive)
 
-# IA-Sample-Teach
+# IA Sample Teach
 
 
 # Prerequisites
@@ -259,9 +259,9 @@ There should be 3 answers.
 
 <details>
  <summary>Solution</summary>
-* true, taken from rabbit.
-* null, taken from animal.
-* undefined, there’s no such property any more.
+* ```js true```, taken from rabbit
+* ```js null```, taken from animal
+* ```js undefined```, there’s no such property any more
 </details>
 
 # Why two hamsters are full?
