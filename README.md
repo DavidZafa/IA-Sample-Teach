@@ -160,33 +160,6 @@ From now on, rabbit.walk() call finds the method immediately in the object and e
 
 For getters/setters – if we read/write a property, they are looked up in the prototype and invoked.
 
-For instance, check out admin.fullName property in the code below:
-```js
- let user = {
-  name: "John",
-  surname: "Smith",
-
-  set fullName(value) {
-    [this.name, this.surname] = value.split(" ");
-  },
-
-  get fullName() {
-    return `${this.name} ${this.surname}`;
-  }
-};
-
-let admin = {
-  __proto__: user,
-  isAdmin: true
-};
-
-alert(admin.fullName); // John Smith (*)
-
-// setter triggers!
-admin.fullName = "Alice Cooper"; // (**)
-```
-Here in the line (*) the property admin.fullName has a getter in the prototype user, so it is called. And in the line (**) the property has a setter in the prototype, so it is called.
-
 # The value of “this”
 An interesting question may arise in the example above: what’s the value of this inside set fullName(value)? Where the properties this.name and this.surname are written: user or admin?
 
